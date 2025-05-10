@@ -1,0 +1,46 @@
+-- Создание таблицы пользователей
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL CHECK(role IN ('admin', 'worker', 'client'))
+);
+
+-- Создание таблицы оборудования
+CREATE TABLE Equipment (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    serial_number TEXT NOT NULL UNIQUE
+);
+
+-- Создание таблицы типов неисправностей
+CREATE TABLE FaultTypes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+
+-- Создание таблицы заявок
+CREATE TABLE Requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date_added TEXT NOT NULL,
+    equipment_id INTEGER NOT NULL,
+    fault_type_id INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    client_id INTEGER NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('pending', 'in_progress', 'completed')),
+    worker_id INTEGER,
+    comments TEXT,
+    FOREIGN KEY (equipment_id) REFERENCES Equipment(id),
+    FOREIGN KEY (fault_type_id) REFERENCES FaultTypes(id),
+    FOREIGN KEY (client_id) REFERENCES Users(id),
+    FOREIGN KEY (worker_id) REFERENCES Users(id)
+);
+
+-- Вставка тестовых данных
+INSERT INTO Users (login, password, role) VALUES ('admin1', 'admin123', 'admin');
+INSERT INTO Users (login, password, role) VALUES ('worker1', 'worker123', 'worker');
+INSERT INTO Users (login, password, role) VALUES ('client1', 'client123', 'client');
+INSERT INTO Equipment (name, serial_number) VALUES ('Printer', 'PR123');
+INSERT INTO Equipment (name, serial_number) VALUES ('Laptop', 'LP456');
+INSERT INTO FaultTypes (name) VALUES ('Hardware Failure');
+INSERT INTO FaultTypes (name) VALUES ('Software Issue');

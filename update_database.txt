@@ -1,0 +1,8 @@
+-- Обновление таблицы Users для поддержки роли Менеджер
+ALTER TABLE Users ADD COLUMN role TEXT NOT NULL DEFAULT 'client' CHECK(role IN ('admin', 'worker', 'client', 'manager'));
+
+-- Обновление таблицы Requests для хранения продленных сроков
+ALTER TABLE Requests ADD COLUMN extended_deadline TEXT;
+
+-- Добавление тестового менеджера
+INSERT OR IGNORE INTO Users (login, password, role) VALUES ('manager1', 'manager123', 'manager');
